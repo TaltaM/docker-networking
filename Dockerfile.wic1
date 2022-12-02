@@ -1,0 +1,30 @@
+# syntax = docker/dockerfile:1
+FROM golang:1.18-alpine3.15 AS builder
+
+WORKDIR /src/
+
+RUN apk add --no-cache make git gcc musl-dev openssl-dev linux-headers
+
+COPY go.mod .
+# COPY go.sum .
+COPY build.sh .
+COPY whoiscalling.go .
+# RUN go mod download
+
+RUN --mount=type=cache,target=/root/.cache/go-build go build
+
+# Add to a distroless container
+FROM alpine:3.15
+COPY --from=builder /src/whoiscalling /usr/local/bin/whoiscalling
+RUN apk add bash vim \
+    && addgroup -g 1000 stride \
+    && adduser -S -h /home/stride -D stride -u 1000 -G stride
+
+USER 1000
+WORKDIR /home/stride
+
+EXPOSE 26657 26656
+
+# CMD ["strided", "start"]
+
+CMD ["whoiscalling"]

@@ -1,0 +1,67 @@
+version: "3"
+services:
+  wic1:
+    image: stridezone:wic1
+    environment:
+      - PEER_ADDRESS=wic1:26657
+      - LISTEN_PORT=26657
+    volumes:
+      - ./state/wic1:/home/stride/
+    ports:
+      - "26657:26657"
+    profiles: ["default-profile"]
+  wic2:
+    image: stridezone:wic1
+    environment:
+      - PEER_ADDRESS=wic1:26657
+      - LISTEN_PORT=26657
+    volumes:
+      - ./state/wic2:/home/stride/
+    profiles: ["default-profile"]
+  wic3:
+    image: stridezone:wic1
+    environment:
+      - PEER_ADDRESS=wic1:26657
+      - LISTEN_PORT=26657
+    volumes:
+      - ./state/wic3:/home/stride/
+    profiles: ["default-profile"]
+  wic1-vlan:
+    image: stridezone:wic1
+    environment:
+      - PEER_ADDRESS=wic1-vlan:26657
+      - LISTEN_PORT=26657
+    volumes:
+      - ./state/wic1:/home/stride/
+    ports:
+      - "26657:26657"
+    profiles: ["vlan-profile"]
+    networks:
+      - ipvlan
+  wic2-vlan:
+    image: stridezone:wic1
+    environment:
+      - PEER_ADDRESS=wic1-vlan:26657
+      - LISTEN_PORT=26657
+    volumes:
+      - ./state/wic2:/home/stride/
+    ports:
+      - "26657:26657"
+    profiles: ["vlan-profile"]
+    networks:
+      - ipvlan
+  wic3-vlan:
+    image: stridezone:wic1
+    environment:
+      - PEER_ADDRESS=wic1-vlan:26657
+      - LISTEN_PORT=26657
+    volumes:
+      - ./state/wic3:/home/stride/
+    ports:
+      - "26657:26657"
+    profiles: ["vlan-profile"]
+    networks:
+      - ipvlan
+networks:
+  ipvlan:
+    driver: ipvlan
